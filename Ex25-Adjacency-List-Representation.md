@@ -1,68 +1,96 @@
 # Ex25 Adjacency List Representation
 ## DATE:
 ## AIM:
-To write a C program to represent the given graph using the adjacency list.
+To write a Java program to represent a given graph using an adjacency list.
 
 ## Algorithm
-1. Initialize variables: 
-   - Declare `n` and `i` as integers.<br>
-   
-2. Read the number of vertices: 
-   - Use `scanf` to read the value of `N` (number of vertices).<br>
-   - Use `scanf` to read the value of `n` (number of edges).<br>
-   
-3. Input edges of the graph: 
-   - Declare an array `edges` of type `struct Edge` with size `n`.<br>
-   - For each edge `i` from `0` to `n-1`:<br>
-     - Use `scanf` to read the source vertex `edges[i].src`.<br>
-     - Use `scanf` to read the destination vertex `edges[i].dest`.<br>
-   
-4. Construct the graph: 
-   - Call `createGraph(edges, n)` to create a graph from the given edges and store the result in `graph`.<br>
-   
-5. Print the graph: 
-   - Call `printGraph(graph)` to print the adjacency list representation of the graph.<br>
-   
-6. End the program: 
-   - Return `0` to indicate successful completion.<br>
+1. Initialize variables:  
+   - Declare `V` (number of vertices) and `edges` list.  
+
+2. Read the number of vertices and edges:  
+   - Assign values to `V` and number of edges.  
+
+3. Input edges of the graph:  
+   - Create an `Edge` class with `src` and `dest`.  
+   - For each edge, read `src` and `dest`.  
+
+4. Construct the graph:  
+   - Create a `Graph` class containing an array of `LinkedList<Integer>` for adjacency lists.  
+   - For each edge, add `dest` to the adjacency list of `src`.  
+
+5. Print the graph:  
+   - Iterate through each vertex and print its adjacency list.  
+
+6. End the program.
 
 ## Program:
-```
+```java
 /*
-Program to find and display the priority of the operator in the given Postfix expression
+Program to represent the given graph using adjacency list
 Developed by: Santhosh G
-RegisterNumber:  212223240152
+RegisterNumber: 212223240152
 */
-int main(void)
-{   int n,i;
-    scanf("%d",&N);
-    scanf("%d",&n);
-    // input array containing edges of the graph (as per the above diagram)
-    // (x, y) pair in the array represents an edge from x to y
-    struct Edge edges[n];
-    for (i = 0; i < n; i++)
-    {
-        // get the source and destination vertex
-        scanf("%d",&edges[i].src);
-        scanf("%d",&edges[i].dest);
-      
+
+import java.util.*;
+
+class Edge {
+    int src, dest;
+    Edge(int s, int d) {
+        src = s;
+        dest = d;
     }
-   
-    // construct a graph from the given edges
-    struct Graph *graph = createGraph(edges, n);
- 
-    // Function to print adjacency list representation of a graph
-    printGraph(graph);
- 
-    return 0;
 }
 
+class Graph {
+    int V;
+    LinkedList<Integer>[] adjList;
+
+    Graph(int V) {
+        this.V = V;
+        adjList = new LinkedList[V];
+        for(int i = 0; i < V; i++)
+            adjList[i] = new LinkedList<>();
+    }
+
+    void addEdge(int src, int dest) {
+        adjList[src].add(dest);
+    }
+
+    void printGraph() {
+        for(int i = 0; i < V; i++) {
+            System.out.print("Vertex " + i + ":");
+            for(Integer v : adjList[i])
+                System.out.print(" " + v);
+            System.out.println();
+        }
+    }
+}
+
+public class AdjacencyListGraph {
+    public static void main(String[] args) {
+        int N = 5; // number of vertices
+        Edge[] edges = {
+            new Edge(0, 1),
+            new Edge(0, 4),
+            new Edge(1, 2),
+            new Edge(1, 3),
+            new Edge(1, 4),
+            new Edge(2, 3),
+            new Edge(3, 4)
+        };
+
+        Graph graph = new Graph(N);
+
+        for(Edge e : edges)
+            graph.addEdge(e.src, e.dest);
+
+        graph.printGraph();
+    }
+}
 ```
-
-## Output:
-
-![image](https://github.com/user-attachments/assets/36c3bb99-6a63-449e-9ab7-ff85c5774791)
+# Output:
+<img width="523" height="597" alt="36c3bb99-6a63-449e-9ab7-ff85c5774791" src="https://github.com/user-attachments/assets/285d6565-fa1f-4ea5-b429-10116afe6ac0" />
 
 
-## Result:
-Thus, the C program to represent the given graph using the adjacency list is implemented successfully
+# Result:
+Thus, the Java program to represent the given graph using an adjacency list is implemented successfully.
