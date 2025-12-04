@@ -1,101 +1,108 @@
 # Ex24 Topological Sort
 ## DATE: 
 ## AIM:
-To compose the code to determine whether the topological ordering for the following graph is possible or not.
-
-![image](https://github.com/user-attachments/assets/c74a7111-9b59-475c-aad4-9baf23d50ec0)
-
+To compose a Java program to determine whether a topological ordering for a directed graph is possible or not.
 
 ## Algorithm
-1. Initialize variables: 
-   - Declare `i`, `v`, `count`, `topo_order[MAX]`, and `indeg[MAX]`.<br>
-   
-2. Create the graph: 
-   - Call `create_graph()` to initialize the graph structure.<br>
-   
-3. Calculate indegree for each vertex: 
-   - For each vertex `i` from `0` to `n-1`:<br>
-     - Calculate `indeg[i]` using `indegree(i)`.<br>
-     - If `indeg[i]` is `0`, insert vertex `i` into the queue using `insert_queue(i)`.<br>
-   
-4. Perform topological sorting: 
-   - Initialize `count` to `0`.<br>
-   - While the queue is not empty and `count` is less than `n`:<br>
-     - Remove vertex `v` from the queue using `delete_queue()`.<br>
-     - Add vertex `v` to `topo_order` at index `++count`.<br>
-     - For each vertex `i` from `0` to `n-1`:<br>
-       - If there is an edge from `v` to `i` (i.e., `adj[v][i] == 1`):<br>
-         - Remove the edge by setting `adj[v][i]` to `0`.<br>
-         - Decrease `indeg[i]` by `1`.<br>
-         - If `indeg[i]` becomes `0`, insert vertex `i` into the queue.<br>
-   
-5. Check for cycles: 
-   - If `count` is less than `n`, print "No topological ordering possible, graph contains cycle" and exit the program.<br>
-   
-6. Print the topological order: 
-   - Print "Vertices in topological order are:".<br>
-   - For each index `i` from `1` to `count`, print `topo_order[i]`.<br>
-   
-7. End the program: 
-   - Return `0` to indicate successful completion.<br>
+1. Initialize variables:  
+   - Declare `topoOrder`, `indeg` arrays and a queue to manage vertices with zero indegree.  
+
+2. Create the graph:  
+   - Use a method `createGraph()` to initialize the adjacency matrix or list.  
+
+3. Calculate indegree for each vertex:  
+   - For each vertex, compute the indegree.  
+   - If indegree is 0, add the vertex to the queue.  
+
+4. Perform topological sorting:  
+   - Initialize `count` to 0.  
+   - While the queue is not empty:  
+     - Remove a vertex from the queue.  
+     - Add it to `topoOrder`.  
+     - For each neighbor, remove the edge and decrease its indegree.  
+     - If indegree becomes 0, enqueue the neighbor.  
+
+5. Check for cycles:  
+   - If `count` is less than total number of vertices, the graph contains a cycle and topological ordering is not possible.  
+
+6. Print the topological order:  
+   - Display vertices in topological order if no cycle exists.  
+
+7. End the program.
+
 ## Program:
-```
+```java
 /*
-Program to determine whether the topological ordering for the following graph is possible or not
+Program to determine whether the topological ordering for a graph is possible or not
 Developed by: Santhosh G
-RegisterNumber:  212223240152
+RegisterNumber: 212223240152
 */
-int main()
-{
-        int i,v,count,topo_order[MAX],indeg[MAX];
 
-        create_graph();
+import java.util.*;
 
-        /*Find the indegree of each vertex*/
-        for(i=0;i<n;i++)
-        {
-                indeg[i] = indegree(i);
-                if( indeg[i] == 0 )
-                        insert_queue(i);
+public class TopologicalSort {
+
+    static int n = 6; // Example number of vertices
+    static int[][] adj = new int[n][n]; // adjacency matrix
+    static int[] indeg = new int[n];
+    static int[] topoOrder = new int[n];
+    static Queue<Integer> queue = new LinkedList<>();
+
+    static void createGraph() {
+        // Example edges
+        adj[5][2] = 1;
+        adj[5][0] = 1;
+        adj[4][0] = 1;
+        adj[4][1] = 1;
+        adj[2][3] = 1;
+        adj[3][1] = 1;
+    }
+
+    static void calculateIndegree() {
+        for (int i = 0; i < n; i++) {
+            indeg[i] = 0;
+            for (int j = 0; j < n; j++) {
+                indeg[i] += adj[j][i];
+            }
+            if (indeg[i] == 0)
+                queue.add(i);
         }
+    }
 
-        count = 0;
+    public static void main(String[] args) {
+        createGraph();
+        calculateIndegree();
 
-        while(  !isEmpty_queue( ) && count < n )
-        {
-                v = delete_queue();
-        topo_order[++count] = v; /*Add vertex v to topo_order array*/
-                /*Delete all edges going from vertex v */
-                for(i=0; i<n; i++)
-                {
-                        if(adj[v][i] == 1)
-                        {
-                                adj[v][i] = 0;
-                                indeg[i] = indeg[i]-1;
-                                if(indeg[i] == 0)
-                                        insert_queue(i);
-                        }
+        int count = 0;
+
+        while (!queue.isEmpty()) {
+            int v = queue.poll();
+            topoOrder[count++] = v;
+
+            for (int i = 0; i < n; i++) {
+                if (adj[v][i] == 1) {
+                    adj[v][i] = 0;
+                    indeg[i]--;
+                    if (indeg[i] == 0)
+                        queue.add(i);
                 }
+            }
         }
 
-        if( count < n )
-        {
-                printf("No topological ordering possible, graph contains cycle\n");
-                exit(1);
+        if (count < n) {
+            System.out.println("No topological ordering possible, graph contains cycle");
+        } else {
+            System.out.println("Vertices in topological order are:");
+            for (int i = 0; i < count; i++)
+                System.out.print(topoOrder[i] + " ");
+            System.out.println();
         }
-        printf("Vertices in topological order are :\n");
-        for(i=1; i<=count; i++)
-                printf( "%d ",topo_order[i] );
-        printf("\n");
-
-        return 0;
-}/*End of main()*/
+    }
+}
 ```
+# Output:
+<img width="1246" height="575" alt="71f71fcd-87ec-46e4-99d8-847900f991b5" src="https://github.com/user-attachments/assets/a7fd6bf1-d3ed-49d6-8baf-5ab5b2e13ab0" />
 
-## Output:
 
-
-![image](https://github.com/user-attachments/assets/71f71fcd-87ec-46e4-99d8-847900f991b5)
-
-## Result:
-Thus, the C program for determining whether the topological ordering for the following graph is possible or not, is implemented successfully.
+# Result:
+Thus, the Java program for determining whether a topological ordering for the graph is possible or not is implemented successfully.
